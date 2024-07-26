@@ -28,7 +28,7 @@ export default function CourseList(){
     }
     const handleDown = (index) => {
         setItems(prev => {
-            if(index == items.length) return [...prev];
+            if(index == items.length - 1) return [...prev];
             const temp = prev[index + 1];
             prev[index + 1] = prev[index];
             prev[index] = temp;

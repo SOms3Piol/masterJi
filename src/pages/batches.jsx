@@ -1,24 +1,26 @@
 
 import { useEffect, useState } from "react"
 import { batches } from "../assets/courses"
-import { FaArrowLeft, FaArrowRight,} from "react-icons/fa6";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { GoArrowUp } from "react-icons/go";
+import { GoChevronLeft , GoChevronRight } from "react-icons/go";
+
 
 export default function Batches(){
     const [data , setData] = useState([]);
     const [start , setStart] = useState(0);
     const [end , setEnd ] = useState(3);
     const [ended , setIsEnded] = useState(false);
-    const [values , setValue] = useState(3)
+    const [values , setValue] = useState(3);
+    const [isFound , setIsFound] = useState(true);
 
     useEffect(()=>{
-        console.log((3) + (-1))
         setData(batches)
+        setIsFound(true);
     },[])
 
+
+
     const handleNext = () => {
-        if (ended) return;
+        // if (ended) return;
     
         const newEnd = end + values;
         
@@ -26,7 +28,7 @@ export default function Batches(){
             setIsEnded(true);
             setStart(end);
             setEnd(data.length); // Adjust to show all remaining items
-            setValue(data.length - start); // Adjust the value to show remaining items
+            setValue(end - start); // Adjust the value to show remaining items
         } else {
             setStart(end);
             setEnd(newEnd);
@@ -47,18 +49,38 @@ export default function Batches(){
     };
     const handleValueChange = (e) => {
         const newValue = Math.max(Number(e.target.value) || 0, 1); // Ensure the value is a positive integer
-        setValue(newValue);
-
+        setValue(newValue)
         // Adjust the end index to respect the new number of rows per page
         setEnd((prevEnd) => {
             const newEnd = start + newValue;
             return newEnd > data.length ? data.length : newEnd;
         });
+        console.log(end , newValue)
     };
 
+    const handleSearch = (e) => {
+        // Get the search query from the event
+        const query = e.target.value;
+    
+        // Filter the data based on the query
+        const filteredArray = data.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
+    
+        // Update state based on whether any items matched the query
+        if (filteredArray.length > 0) {
+            setData(filteredArray);
+            setStart(0);
+            setEnd(filteredArray.length)
+            setIsFound(true);
+        } else {
+            setData(batches);
+            setIsFound(false);
+        }
+    }
+    
+
     return(
-        <div className=" py-9  w-full bg-[#E2BBE9] items-center flex flex-col  justify-center">
-            <div className="text-5xl py-3">
+        <div className=" py-9  w-full bg-[#E2BBE9] items-center flex flex-col gap-4 justify-center">
+            <div className="text-5xl text-[#444B79] py-3">
                 <h1>Chai aur Code</h1>
             </div>
             <div className="w-[1223px] bg-white flex flex-col gap-6 rounded-xl px-5 py-7 ">
@@ -67,7 +89,7 @@ export default function Batches(){
                     <p className="text-[#4B4747] ">Create learner’s batch and share information at the same time.</p>
                 </div>
                 <div className="flex gap-2">
-                    <input type="text" className="border px-1 outline-none h-[43px] rounded" placeholder="Search by title"/>
+                    <input type="text" onChange={(e)=>handleSearch(e)} className="border px-1 outline-none h-[43px] rounded" placeholder="Search by title"/>
                     <button className="bg-[#6C6BAF] text-white h-[43px] w-[116px] rounded">Search</button>
                 </div>
                <div>
@@ -81,7 +103,7 @@ export default function Batches(){
                         </thead>
                         
                             {
-                                data.slice(start , end).map((item)=>(
+                              isFound &&  data.slice(start , end).map((item)=>(
                                     <>
                                     <tbody key={start}>
                                         <td className="border flex gap-2 items-center px-3 py-3"><span><img src={item.img} className="w-[130px] rounded-lg h-[60px]" alt="" /></span><span>{item.title}</span></td>
@@ -94,36 +116,17 @@ export default function Batches(){
                                 ))
                             }
                     </table>
-                   <div className="flex justify-end w-[62vw] py-5 ">
+                   <div className="flex justify-end w-[62vw] gap-3 py-5 ">
                         <span className="flex   text-[#4B4747] items-center">Rows per Page</span>
                         <div className="flex ml-3 mr-3  border">
                             <input
                             value={values}
                             onChange={handleValueChange}
                             type="number" className="text-center w-[40px] h-[40px] "/>
-                            <div className="flex flex-col justify-center flex-rev">
-                            <button
-                                onClick={() => {
-                                    setValue((val) => Math.max(val - 1, 1)); // Decrease value but ensure it’s at least 1
-                                    setEnd((prevEnd) => Math.max(start + Math.max(values - 1, 1), prevEnd));
-                                }}
-                            >
-                                <IoIosArrowUp />
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setValue((val) => val + 1);
-                                    setEnd((prevEnd) => Math.min(start + (val + 1), data.length));
-                                }}
-                            >
-                                <IoIosArrowDown />
-                            </button>
-                            
-                            </div>
                         </div>
                          
-                        <button onClick={handlePrev}><FaArrowLeft size={30} /></button>
-                        <button onClick={handleNext}><FaArrowRight size={30} /></button>
+                        <button disabled={start == 0 ? true : false} onClick={handlePrev}>{start == 0 ? <GoChevronLeft size={30} color="grey" />:<GoChevronLeft size={30} />}</button>
+                        <button disabled={end == data.length ? true : false} onClick={handleNext}>{end == data.length ? <GoChevronRight size={30} color="grey" />:<GoChevronRight size={30} />}</button>
                    </div>
                </div>
             </div>
