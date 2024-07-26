@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom";
 
 const OtpForm = () => {
     const [otp , setOtp] = useState(new Array(4).fill(""));
@@ -65,6 +66,7 @@ const OtpForm = () => {
                     <p className="text-slate-400 ">Didn't receive Code?
                         <span className={`text-slate-800 
                         font-semibold `}>Resend</span> 
+                        <Link to={'/course-list'}>course-list</Link>
                     </p>
                  </div>
             </div>
