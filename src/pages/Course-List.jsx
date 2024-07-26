@@ -61,7 +61,7 @@ export default function CourseList(){
                             </div>
                             <div className="flex gap-5">
                                 <p>{item.price}</p>
-                                <p className="bg-green-100 border border-green-500  px-1 flex  items-center text-[14px] rounded">{item.category}</p>
+                                <p className="bg-green-100 border border-green-500  px-1 flex  items-center text-[14px] rounded">{item.status}</p>
                                <div className="relative">
                                 <button
                                     onClick={()=>handleClick2(item.id)}
