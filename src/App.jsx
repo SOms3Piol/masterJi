@@ -6,14 +6,19 @@ import CourseList from './pages/Course-List'
 import Batches from './pages/batches'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-function App() {
+
+function Nav(){
   const nav = useNavigate()
   useEffect(()=>{
     nav('/otp-form')
-  })
+  },[])
+}
 
+function App() {
+  
   return (
     <Routes>
+        <Route path='/' element={<Nav />}/>
         <Route path='/otp-form' element={<OtpForm />}/>
         <Route path='/course-list' element={<CourseList />} />
         <Route path='/batches' element={<Batches />}/>
