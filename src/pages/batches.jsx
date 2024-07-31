@@ -83,34 +83,34 @@ export default function Batches(){
             <div className="text-5xl text-[#444B79] py-3">
                 <h1>Chai aur Code</h1>
             </div>
-            <div className="w-[1223px] bg-white flex flex-col gap-6 rounded-xl px-5 py-7 ">
+            <div className="w-[90vw] bg-white flex flex-col gap-6 rounded-xl px-5 py-7 ">
                 <div>
-                    <h1 className="text-5xl text-[#313131] mb-1 ">Batches</h1>
-                    <p className="text-[#4B4747] ">Create learner’s batch and share information at the same time.</p>
+                    <h1 className="text-5xl text-[#313131] mb-1  max-sm:text-xl">Batches</h1>
+                    <p className="text-[#4B4747] max-sm:text-xs ">Create learner’s batch and share information at the same time.</p>
                 </div>
                 <div className="flex gap-2">
                     <input type="text" onChange={(e)=>handleSearch(e)} className="border px-1 outline-none h-[43px] rounded" placeholder="Search by title"/>
                     <button className="bg-[#6C6BAF] text-white h-[43px] w-[116px] rounded">Search</button>
                 </div>
                <div>
-                    <table className="table-auto rounded-lg text-left px-3 border-collapse">
-                        <thead className="bg-[#F2F2F2]">
-                            <th className="border px-3 py-3">Title</th>
-                            <th className="border px-3 py-3">Start Date</th>
-                            <th className="border px-3 py-3">End Date</th>
-                            <th className="border px-3 py-3">Price</th>
-                            <th className="border px-3 py-3">status</th>
+                    <table className="table-auto rounded-lg max-sm:text-xs text-left px-3 border-collapse      ">
+                        <thead className="bg-[#F2F2F2] w-full">
+                            <th className="border sm:px-3 sm:py-3">Title</th>
+                            <th className="border sm:px-3 sm:py-3">Start Date</th>
+                            <th className="border sm:px-3 sm:py-3">End Date</th>
+                            <th className="border sm:px-3 sm:py-3">Price</th>
+                            <th className="border sm:px-3 sm:py-3">status</th>
                         </thead>
                         
                             {
                               isFound &&  data.slice(start , end).map((item)=>(
                                     <>
                                     <tbody key={start}>
-                                        <td className="border flex gap-2 items-center px-3 py-3"><span><img src={item.img} className="w-[130px] rounded-lg h-[60px]" alt="" /></span><span>{item.title}</span></td>
-                                        <td className="border px-3 py-3">{item.startDate}</td>
-                                        <td className="border px-3 py-3">{item.enddate}</td>
-                                        <td className="border px-3 py-3">{item.price}</td>
-                                        <td className="border px-3 py-3"><span className="border px-2 rounded border-[#4ED04B] bg-[#DEFFDE]">{item.status}</span></td>
+                                        <td className="border flex gap-2 items-center sm:px-3 sm:py-3 max-md:flex-col justify-center"><span><img src={item.img} className="w-[130px] rounded-lg h-[60px]" alt="" /></span><span>{item.title}</span></td>
+                                        <td className="border sm:px-3 sm:py-3">{item.startDate}</td>
+                                        <td className="border sm:px-3 sm:py-3">{item.enddate}</td>
+                                        <td className="border sm:px-3 sm:py-3">{item.price}</td>
+                                        <td className="border sm:px-3 sm:py-3"><span className="border px-2 rounded border-[#4ED04B] bg-[#DEFFDE]">{item.status}</span></td>
                                     </tbody>
                                     </>
                                 ))
