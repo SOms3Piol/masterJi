@@ -48,7 +48,7 @@ const OtpForm = () => {
 
         const pastedData = (e.clipboardData || window.clipboardData).getData('text');
         const digits = pastedData.replace(/[^0-9]/g, '').split('');
-
+        console.log(digits)
         let currentIndex = index;
 
         digits.forEach(digit => {
@@ -56,8 +56,9 @@ const OtpForm = () => {
                 inputRefs.current[currentIndex].value = digit;
                 let newArr = [...otp];
                 newArr[currentIndex] = digit; // Update the state
-                setOtp(newArr);
+                
                 currentIndex += 1; // Move to the next input
+                setOtp(newArr);
             }
         });
 
