@@ -53,13 +53,12 @@ const handlePaste = (index, e) => {
   // Extract only digits from the pasted data
   const digits = pastedData.replace(/[^0-9]/g, '');
 
-  // Limit to one digit per input field
-  const limitedDigits = digits.slice(0, otp.length);
-
-  // Update input values one by one
-  limitedDigits.forEach((digit, i) => {
-    if (inputRefs.current[i] && digit.length === 1) {
-      inputRefs.current[i].value = digit;
+  // Distribute digits across input fields, starting from the current index
+  let currentIndex = index;
+  digits.forEach(digit => {
+    if (inputRefs.current[currentIndex]) {
+      inputRefs.current[currentIndex].value = digit;
+      currentIndex = (currentIndex + 1) % otp.length; // Cycle back to the beginning if necessary
     }
   });
 };
