@@ -45,32 +45,34 @@ const handleKey = (index, e) => {
     }
 };
 
-// Updated paste handling to distribute digits across inputs
 const handlePaste = (index, e) => {
     e.preventDefault(); // Prevent the default paste behavior
     const pasteData = e.clipboardData.getData('text');
 
-    // Validate pasted data: Only allow integers and ensure it's 4 digits
-    if (/^\d{1,4}$/.test(pasteData)) {
+    // Validate pasted data: Only allow integers
+    if (/^\d*$/.test(pasteData)) {
         let newArr = [...otp];
+        let currentIndex = index;
 
         // Distribute each digit to the respective input
         for (let i = 0; i < pasteData.length; i++) {
-            if (index + i < newArr.length) {
-                newArr[index + i] = pasteData[i];
+            if (currentIndex < newArr.length) {
+                newArr[currentIndex] = pasteData[i];
+                currentIndex++;
             }
         }
-        
+
         setOtp(newArr);
         setBgColor('bg-[#112D4E]');
 
         // Move focus to the last filled input
-        inputRefs.current[Math.min(index + pasteData.length, 3)].focus();
+        inputRefs.current[Math.min(currentIndex, 3)].focus();
     } else {
         // If the pasted data is not valid, reset the input
         e.target.value = '';
     }
 };
+
     
 
     return(
