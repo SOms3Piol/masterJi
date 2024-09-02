@@ -63,7 +63,7 @@ const handlePaste = (index, e) => {
         setBgColor('bg-[#112D4E]');
 
         // Move focus to the last filled input
-        inputRefs.current[Math.min(currentIndex, 3)].focus();
+        inputRefs.current[pasteData.length - 1].focus();
     } else {
         // If the pasted data is not valid, reset the input
         e.target.value = '';
