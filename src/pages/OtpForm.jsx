@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+dimport { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom";
 
 const OtpForm = () => {
@@ -92,7 +92,8 @@ const handlePaste = (index, e) => {
                         className="border text-center max-md:w-[75px] max-md:h-[80px] text-[48px] outline-none rounded-lg bg-slate-300 w-[90px] h-[100px] "
                         onKeyDown={(e) => handleKey(index , e)}
                         onChange={(e) => handleChange(index , e)}
-                       
+                        onPaste={(e) => handlePaste(index, e)}
+                        maxLength={1}
                         />
                     ))
                  }
