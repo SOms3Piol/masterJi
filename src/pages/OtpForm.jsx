@@ -46,28 +46,22 @@ const handleKey = (index, e) => {
 };
 
 const handlePaste = (index, e) => {
-    e.preventDefault(); // Prevent the default paste behavior
-    const pasteData = e.clipboardData.getData('text');
+  e.preventDefault();
 
-    // Validate pasted data: Only allow integers
-    if (/^\d*$/.test(pasteData)) {
-        let newArr = [...otp];
-        let currentIndex = index;
+  const pastedData = (e.clipboardData || window.clipboardData).getData('text');
 
-        // Distribute each digit to the respective input
-        for (let i = 0; i < pasteData.length; i++) {
-                newArr[i] = pasteData[i];
-        }
+  // Extract only digits from the pasted data
+  const digits = pastedData.replace(/[^0-9]/g, '');
 
-        setOtp(newArr);
-        setBgColor('bg-[#112D4E]');
+  // Limit to one digit per input field
+  const limitedDigits = digits.slice(0, otp.length);
 
-        // Move focus to the last filled input
-        inputRefs.current[pasteData.length - 1].focus();
-    } else {
-        // If the pasted data is not valid, reset the input
-        e.target.value = '';
+  // Update input values one by one
+  limitedDigits.forEach((digit, i) => {
+    if (inputRefs.current[i] && digit.length === 1) {
+      inputRefs.current[i].value = digit;
     }
+  });
 };
 
     
