@@ -56,10 +56,7 @@ const handlePaste = (index, e) => {
 
         // Distribute each digit to the respective input
         for (let i = 0; i < pasteData.length; i++) {
-            if (currentIndex < newArr.length) {
-                newArr[currentIndex] = pasteData[i];
-                currentIndex++;
-            }
+                newArr[i] = pasteData[i];
         }
 
         setOtp(newArr);
