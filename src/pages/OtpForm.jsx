@@ -17,24 +17,60 @@ const OtpForm = () => {
 
 
     const handleChange = (index, e) => {
+    const value = e.target.value;
+
+    // Validate input: Allow only integers
+    if (!/^\d*$/.test(value)) {
+        // If the input is not a valid integer, reset the value
+        e.target.value = '';
+        return;
+    }
+    
+    let newArr = [...otp];
+    newArr[index] = value;
+    setOtp(newArr);
+    setBgColor('bg-[#112D4E]');
+
+    // Move focus to the next input if the current input is filled
+    if (value && index < 3) {
+        return inputRefs.current[index + 1].focus();
+    }
+};
+
+const handleKey = (index, e) => {
+    // Handle backspace to focus on the previous input
+    if (e.key === "Backspace" && !e.target.value && index > 0) {
+        inputRefs.current[index - 1].focus();
+        setBgColor('bg-slate-800');
+    }
+};
+
+// Updated paste handling to distribute digits across inputs
+const handlePaste = (index, e) => {
+    e.preventDefault(); // Prevent the default paste behavior
+    const pasteData = e.clipboardData.getData('text');
+
+    // Validate pasted data: Only allow integers and ensure it's 4 digits
+    if (/^\d{1,4}$/.test(pasteData)) {
         let newArr = [...otp];
-        newArr[index] = e.target.value;
-        setOtp(newArr);
-        setBgColor('bg-[#112D4E]')
-        if(e.target.value && index < 3){
-            return inputRefs.current[index + 1].focus()
+
+        // Distribute each digit to the respective input
+        for (let i = 0; i < pasteData.length; i++) {
+            if (index + i < newArr.length) {
+                newArr[index + i] = pasteData[i];
+            }
         }
-    };
-    
+        
+        setOtp(newArr);
+        setBgColor('bg-[#112D4E]');
 
-    
-    const handleKey = (index, e) => {
-
-        if(e.key === "Backspace" && !e.target.value && index > 0){
-            inputRefs.current[index - 1].focus()
-            setBgColor('bg-slate-800')
-          }
-    };
+        // Move focus to the last filled input
+        inputRefs.current[Math.min(index + pasteData.length, 3)].focus();
+    } else {
+        // If the pasted data is not valid, reset the input
+        e.target.value = '';
+    }
+};
     
 
     return(
