@@ -1,134 +1,110 @@
-import { useEffect, useState } from "react"
-import { batches } from "../assets/courses"
-import { GoChevronLeft , GoChevronRight } from "react-icons/go";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
+const OtpForm = () => {
+    const [otp, setOtp] = useState(new Array(4).fill(""));
+    const [bgColor, setBgColor] = useState('bg-slate-800');
+    const inputRefs = useRef([]);
 
-export default function Batches(){
-    const [data , setData] = useState([]);
-    const [start , setStart] = useState(0);
-    const [end , setEnd ] = useState(3);
-    const [ended , setIsEnded] = useState(false);
-    const [values , setValue] = useState(3);
-    const [isFound , setIsFound] = useState(true);
+    useEffect(() => {
+        const actualSize = otp.filter(el => el !== "").length;
+        if (otp.join("") === "1234") {
+            setBgColor('bg-[#23CF9B]');
+        } else if (otp.join("") !== "1234" && actualSize === 4) {
+            setBgColor('bg-[#EB2D5B]');
+        }
+    }, [otp]);
 
-    useEffect(()=>{
-        setData(batches)
-        setIsFound(true);
-    },[])
+    const handleChange = (index, e) => {
+        const value = e.target.value;
 
+        // Validate input: Allow only integers
+        if (!/^\d*$/.test(value)) {
+            e.target.value = '';
+            return;
+        }
 
+        let newArr = [...otp];
+        newArr[index] = value;
+        setOtp(newArr);
+        setBgColor('bg-[#112D4E]');
 
-    const handleNext = () => {
-        // if (ended) return;
-    
-        const newEnd = end + values;
-        
-        if (newEnd >= data.length) {
-            setIsEnded(true);
-            setStart(end);
-            setEnd(data.length); // Adjust to show all remaining items
-            setValue(end - start); // Adjust the value to show remaining items
-        } else {
-            setStart(end);
-            setEnd(newEnd);
-            setValue(values); // Maintain the default number of items per chunk
+        // Move focus to the next input if the current input is filled
+        if (value && index < 3) {
+            return inputRefs.current[index + 1].focus();
         }
     };
-    
-    const handlePrev = () => {
-        if (start === 0) return; // No previous data to show
 
-        const newStart = start - values;
-        const newEnd = start;
-
-        setStart(newStart < 0 ? 0 : newStart);
-        setEnd(newStart < 0 ? values : newEnd);
-
-        setIsEnded(false); // Reset ended status
+    const handleKey = (index, e) => {
+        // Handle backspace to focus on the previous input
+        if (e.key === "Backspace" && !e.target.value && index > 0) {
+            inputRefs.current[index - 1].focus();
+            setBgColor('bg-slate-800');
+        }
     };
-    const handleValueChange = (e) => {
-        const newValue = Math.max(Number(e.target.value) || 0, 1); // Ensure the value is a positive integer
-        setValue( newValue > data.length ? data.length : newValue)
-        // Adjust the end index to respect the new number of rows per page
-        setEnd((prevEnd) => {
-            const newEnd = start + newValue;
-            return newEnd > data.length ? data.length : newEnd;
+
+    const handlePaste = (index, e) => {
+        e.preventDefault();
+
+        const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+        const digits = pastedData.replace(/[^0-9]/g, '').split('');
+        console.log(digits)
+        let currentIndex = index;
+
+        digits.forEach(digit => {
+            if (inputRefs.current[currentIndex] && otp[currentIndex] === "") {
+                inputRefs.current[currentIndex].value = digit;
+                let newArr = [...otp];
+                newArr[currentIndex] = digit; // Update the state
+                
+                currentIndex += 1; // Move to the next input
+                setOtp(newArr);
+            }
         });
-        console.log(end , values)
+
+        while (currentIndex < otp.length && otp[currentIndex] !== "") {
+            currentIndex++;
+        }
+        if (inputRefs.current[currentIndex]) {
+            inputRefs.current[currentIndex].focus();
+        }
     };
 
-    const handleSearch = (e) => {
-        // Get the search query from the event
-        const query = e.target.value;
-    
-        // Filter the data based on the query
-        const filteredArray = data.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
-    
-        // Update state based on whether any items matched the query
-        if (filteredArray.length > 0) {
-            setData(filteredArray);
-            setStart(0);
-            setEnd(filteredArray.length)
-            setIsFound(true);
-        } else {
-            setData(batches);
-            setIsFound(false);
-        }
-    }
-    
-
-    return(
-        <div className=" py-9  w-full bg-[#E2BBE9] items-center flex flex-col gap-4 justify-center">
-            <div className="text-5xl text-[#444B79] py-3">
-                <h1>Chai aur Code</h1>
-            </div>
-            <div className="w-[90vw] bg-white flex flex-col gap-6 rounded-xl px-5 py-7 ">
-                <div>
-                    <h1 className="text-5xl text-[#313131] mb-1  max-sm:text-xl">Batches</h1>
-                    <p className="text-[#4B4747] max-sm:text-xs ">Create learner’s batch and share information at the same time.</p>
+    return (
+        <div className="relative bg-sky-800 flex gap-9 flex-col justify-center items-center h-screen w-full">
+            <h1 className="text-white text-5xl max-md:text-3xl font-bold">Chai aur Code</h1>
+            <div className="w-[60vw] m-3 max-sm:w-full flex flex-col gap-[44px] items-center justify-center text-center rounded-3xl py-5 gap-3 bg-white h-[514px]">
+                <div className="flex flex-col gap-1">
+                    <h1 className="font-semibold text-[40px] max-md:text-2xl max-sm:text-3xl">Mobile Phone Verification</h1>
+                    <p className="text-slate-400 text-[25px] max-md:text-base max-sm:text-sm font-medium">Enter the 4-digit verification code that was sent to <br /> your phone number</p>
                 </div>
-                <div className="flex gap-2">
-                    <input type="text" onChange={(e)=>handleSearch(e)} className="border px-1 outline-none h-[43px] rounded" placeholder="Search by title"/>
-                    <button className="bg-[#6C6BAF] text-white h-[43px] w-[116px] rounded">Search</button>
-                </div>
-               <div>
-                    <table className="table-auto rounded-lg max-sm:text-xs text-left px-3 border-collapse      ">
-                        <thead className="bg-[#F2F2F2] w-full">
-                            <th className="border sm:px-3 sm:py-3">Title</th>
-                            <th className="border sm:px-3 sm:py-3">Start Date</th>
-                            <th className="border sm:px-3 sm:py-3">End Date</th>
-                            <th className="border sm:px-3 sm:py-3">Price</th>
-                            <th className="border sm:px-3 sm:py-3">status</th>
-                        </thead>
-                        
-                            {
-                              isFound &&  data.slice(start , end).map((item)=>(
-                                    <>
-                                    <tbody key={start}>
-                                        <td className="border flex gap-2 items-center sm:px-3 sm:py-3 max-md:flex-col justify-center"><span><img src={item.img} className="w-[130px] rounded-lg h-[60px]" alt="" /></span><span>{item.title}</span></td>
-                                        <td className="border sm:px-3 sm:py-3">{item.startDate}</td>
-                                        <td className="border sm:px-3 sm:py-3">{item.enddate}</td>
-                                        <td className="border sm:px-3 sm:py-3">{item.price}</td>
-                                        <td className="border sm:px-3 sm:py-3"><span className="border px-2 rounded border-[#4ED04B] bg-[#DEFFDE]">{item.status}</span></td>
-                                    </tbody>
-                                    </>
-                                ))
-                            }
-                    </table>
-                   <div className="flex justify-end w-[62vw] gap-3 py-5 ">
-                        <span className="flex   text-[#4B4747] items-center">Rows per Page</span>
-                        <div className="flex ml-3 mr-3  border">
+                <div className="flex gap-5 items-center">
+                    {
+                        otp.map((obj, index) => (
                             <input
-                            value={values}
-                            onChange={handleValueChange}
-                            type="number" className="text-center w-[40px] h-[40px] "/>
-                        </div>
-                         
-                        <button disabled={start == 0 ? true : false} onClick={handlePrev}>{start == 0 ? <GoChevronLeft size={30} color="grey" />:<GoChevronLeft size={30} />}</button>
-                        <button disabled={end == data.length ? true : false} onClick={handleNext}>{end == data.length ? <GoChevronRight size={30} color="grey" />:<GoChevronRight size={30} />}</button>
-                   </div>
-               </div>
+                                key={index}
+                                ref={(input) => inputRefs.current[index] = input}
+                                type="text"
+                                value={obj}
+                                className="border text-center max-md:w-[75px] max-md:h-[80px] text-[48px] outline-none rounded-lg bg-slate-300 w-[90px] h-[100px]"
+                                onKeyDown={(e) => handleKey(index, e)}
+                                onChange={(e) => handleChange(index, e)}
+                                onPaste={(e) => handlePaste(index, e)}
+                                maxLength={1}
+                            />
+                        ))
+                    }
+                </div>
+                <div className="flex flex-col gap-1">
+                    <button className={`py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColor}`}>Verify Account</button>
+                    <p className="text-slate-400">Didn't receive Code?
+                        <span className={`text-slate-800 font-semibold`}>Resend</span>
+                        <Link to={'/course-list'}>course-list</Link>
+                    </p>
+                </div>
             </div>
         </div>
-    )
-}
+    );
+};
+
+export default OtpForm;
