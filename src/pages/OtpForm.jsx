@@ -1,19 +1,33 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 const OtpForm = () => {
-    const [otp, setOtp] = useState(new Array(4).fill(""));
-    const [bgColor, setBgColor] = useState('bg-slate-800');
+    const otpRef = useRef(new Array(4).fill(""));
+    const bgColorRef = useRef('bg-slate-800');
     const inputRefs = useRef([]);
 
     useEffect(() => {
-        const actualSize = otp.filter(el => el !== "").length;
-        if (otp.join("") === "1234") {
-            setBgColor('bg-[#23CF9B]');
-        } else if (otp.join("") !== "1234" && actualSize === 4) {
-            setBgColor('bg-[#EB2D5B]');
-        }
-    }, [otp]);
+        const handleBackgroundColor = () => {
+            const otpValue = otpRef.current.join("");
+            const actualSize = otpRef.current.filter(el => el !== "").length;
+
+            if (otpValue === "1234") {
+                bgColorRef.current = 'bg-[#23CF9B]';
+            } else if (otpValue !== "1234" && actualSize === 4) {
+                bgColorRef.current = 'bg-[#EB2D5B]';
+            } else {
+                bgColorRef.current = 'bg-slate-800';
+            }
+
+            // Update the button background color
+            const button = document.getElementById("verify-button");
+            if (button) {
+                button.className = `py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColorRef.current}`;
+            }
+        };
+
+        handleBackgroundColor();
+    }, [otpRef.current]);
 
     const handleChange = (index, e) => {
         const value = e.target.value;
@@ -24,14 +38,17 @@ const OtpForm = () => {
             return;
         }
 
-        let newArr = [...otp];
-        newArr[index] = value;
-        setOtp(newArr);
-        setBgColor('bg-[#112D4E]');
+        otpRef.current[index] = value;
 
         // Move focus to the next input if the current input is filled
         if (value && index < 3) {
-            return inputRefs.current[index + 1].focus();
+            inputRefs.current[index + 1].focus();
+        }
+
+        // Update the background color
+        const button = document.getElementById("verify-button");
+        if (button) {
+            button.className = `py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColorRef.current}`;
         }
     };
 
@@ -39,7 +56,6 @@ const OtpForm = () => {
         // Handle backspace to focus on the previous input
         if (e.key === "Backspace" && !e.target.value && index > 0) {
             inputRefs.current[index - 1].focus();
-            setBgColor('bg-slate-800');
         }
     };
 
@@ -48,21 +64,18 @@ const OtpForm = () => {
 
         const pastedData = (e.clipboardData || window.clipboardData).getData('text');
         const digits = pastedData.replace(/[^0-9]/g, '').split('');
-        console.log(digits)
         let currentIndex = index;
 
         digits.forEach(digit => {
-            if (inputRefs.current[currentIndex] && otp[currentIndex] === "") {
+            if (inputRefs.current[currentIndex] && otpRef.current[currentIndex] === "") {
                 inputRefs.current[currentIndex].value = digit;
-                let newArr = [...otp];
-                newArr[currentIndex] = digit; // Update the state
+                otpRef.current[currentIndex] = digit; // Update the ref
                 
                 currentIndex += 1; // Move to the next input
-                setOtp(newArr);
             }
         });
 
-        while (currentIndex < otp.length && otp[currentIndex] !== "") {
+        while (currentIndex < otpRef.current.length && otpRef.current[currentIndex] !== "") {
             currentIndex++;
         }
         if (inputRefs.current[currentIndex]) {
@@ -80,12 +93,11 @@ const OtpForm = () => {
                 </div>
                 <div className="flex gap-5 items-center">
                     {
-                        otp.map((obj, index) => (
+                        otpRef.current.map((_, index) => (
                             <input
                                 key={index}
                                 ref={(input) => inputRefs.current[index] = input}
                                 type="text"
-                                value={obj}
                                 className="border text-center max-md:w-[75px] max-md:h-[80px] text-[48px] outline-none rounded-lg bg-slate-300 w-[90px] h-[100px]"
                                 onKeyDown={(e) => handleKey(index, e)}
                                 onChange={(e) => handleChange(index, e)}
@@ -96,7 +108,7 @@ const OtpForm = () => {
                     }
                 </div>
                 <div className="flex flex-col gap-1">
-                    <button className={`py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColor}`}>Verify Account</button>
+                    <button id="verify-button" className={`py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColorRef.current}`}>Verify Account</button>
                     <p className="text-slate-400">Didn't receive Code?
                         <span className={`text-slate-800 font-semibold`}>Resend</span>
                         <Link to={'/course-list'}>course-list</Link>
