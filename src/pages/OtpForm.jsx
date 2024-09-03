@@ -59,10 +59,10 @@ const OtpForm = () => {
         }
     };
 
-    const handlePaste = (index, e) => {
-        e.preventDefault();
+   const handlePaste = (index, e) => {
+    e.preventDefault();
 
-        const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+    navigator.clipboard.readText().then(pastedData => {
         const digits = pastedData.replace(/[^0-9]/g, '').split('');
         let currentIndex = index;
 
@@ -70,6 +70,7 @@ const OtpForm = () => {
             if (inputRefs.current[currentIndex] && otpRef.current[currentIndex] === "") {
                 inputRefs.current[currentIndex].value = digit;
                 otpRef.current[currentIndex] = digit; // Update the ref
+                inputRefs.current[currentIndex].dispatchEvent(new Event('input')); // Trigger input event
                 
                 currentIndex += 1; // Move to the next input
             }
@@ -81,7 +82,10 @@ const OtpForm = () => {
         if (inputRefs.current[currentIndex]) {
             inputRefs.current[currentIndex].focus();
         }
-    };
+    }).catch(error => {
+        console.error('Failed to read clipboard data:', error);
+    });
+};
 
     return (
         <div className="relative bg-sky-800 flex gap-9 flex-col justify-center items-center h-screen w-full">
