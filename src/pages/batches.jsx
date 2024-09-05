@@ -15,21 +15,22 @@ export default function Batches() {
         setIsFound(true);
     }, []);
 
-    const handleNext = () => {
-        const newEnd = end + values;
-        
-        if (newEnd >= data.length) {
-            setIsEnded(true);
-            setStart(end);
-            setEnd(data.length); // Adjust to show all remaining items
-            setValue(data.length - start); // Adjust the value to show remaining items
-        } else {
-            setStart(end);
-            setEnd(newEnd);
-            setValue(values); // Maintain the default number of items per chunk
-            setIsEnded(false); // Reset ended status
-        }
-    };
+   const handleNext = () => {
+    const newEnd = end + values;
+
+    if (newEnd >= data.length) {
+        setIsEnded(true);
+        setStart(end);
+        setEnd(data.length); // Adjust to show all remaining items
+        setValue(data.length - start); // Adjust the value to show remaining items
+    } else {
+        setStart(end);
+        setEnd(newEnd);
+        setValue(values); // Maintain the default number of items per chunk
+        setIsEnded(false); // Reset ended status
+    }
+};
+
 
     const handlePrev = () => {
         if (start === 0) return; // No previous data to show
