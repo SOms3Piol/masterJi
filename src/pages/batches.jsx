@@ -64,27 +64,32 @@ export default function Batches(){
         console.log(end , newValue)
     };
 
-    const handleSearch = (e) => {
-        // Get the search query from the event
-        const query = e.target.value;
-    
-        // Filter the data based on the query
-        const filteredArray = data.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
-    
-        // Update state based on whether any items matched the query
-        if (filteredArray.length > 0) {
-            setData(filteredArray);
-            setStart(0);
-            setEnd(filteredArray.length)
-            setValue(prev => prev > filteredArray.length ? filteredArray.length : prev);
-            setIsFound(true);
-        } else {
-            setData(batches);
-            setStart(0);
-            setEnd(values)
-            setIsFound(false);
-        }
+   const handleSearch = (e) => {
+  // Get the search query from the event
+  const query = e.target.value;
+
+  // Filter the data based on the query
+  const filteredArray = data.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
+
+  // Update state based on whether any items matched the query
+  if (filteredArray.length > 0) {
+    setData(filteredArray);
+    setStart(0);
+    setEnd(filteredArray.length);
+    setValue(prev => prev > filteredArray.length ? filteredArray.length : prev);
+    setIsFound(true);
+  } else {
+    setData(batches);
+    setStart(0);
+    if (query.trim() === '') {
+      setEnd(values);
+    } else {
+      setEnd(filteredArray.length);
     }
+    setIsFound(false);
+  }
+}
+
     
 
     return(
