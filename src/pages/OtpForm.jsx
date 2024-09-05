@@ -94,9 +94,10 @@ const OtpForm = () => {
                 </div>
                 <div className="flex gap-5 items-center">
                     {
-                        otp.map((_, index) => (
+                        otp.map((digit, index) => (
                             <input
                                 key={index}
+                                value = {digit}
                                 ref={(input) => inputRefs.current[index] = input}
                                 type="text"
                                 className="border text-center max-md:w-[75px] max-md:h-[80px] text-[48px] outline-none rounded-lg bg-slate-300 w-[90px] h-[100px]"
