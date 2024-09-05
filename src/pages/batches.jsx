@@ -74,6 +74,8 @@ export default function Batches(){
             setIsFound(true);
         } else {
             setData(batches);
+            setStart(0);
+            setEnd(values)
             setIsFound(false);
         }
     }
