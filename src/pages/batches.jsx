@@ -49,7 +49,7 @@ export default function Batches(){
     };
     const handleValueChange = (e) => {
         const newValue = Math.max(Number(e.target.value) || 0, 1); // Ensure the value is a positive integer
-        setValue(newValue)
+        setValue(newValue > data.length ? data.length : newValue);
         // Adjust the end index to respect the new number of rows per page
         setEnd((prevEnd) => {
             const newEnd = start + newValue;
