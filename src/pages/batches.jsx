@@ -70,6 +70,7 @@ export default function Batches(){
             setData(filteredArray);
             setStart(0);
             setEnd(filteredArray.length)
+            setValue(prev => prev > filteredArray.length ? filteredArray.length : prev);
             setIsFound(true);
         } else {
             setData(batches);
