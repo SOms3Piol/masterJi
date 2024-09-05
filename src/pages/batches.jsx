@@ -94,7 +94,9 @@ export default function Batches(){
                     <button className="bg-[#6C6BAF] text-white h-[43px] w-[116px] rounded">Search</button>
                 </div>
                <div>
-                    <table className="table-auto rounded-lg max-sm:text-xs text-left px-3 border-collapse      ">
+                   {
+                       isFound ? (<>
+                       <table className="table-auto rounded-lg max-sm:text-xs text-left px-3 border-collapse      ">
                         <thead className="bg-[#F2F2F2] w-full">
                             <th className="border sm:px-3 sm:py-3">Title</th>
                             <th className="border sm:px-3 sm:py-3">Start Date</th>
@@ -103,8 +105,8 @@ export default function Batches(){
                             <th className="border sm:px-3 sm:py-3">status</th>
                         </thead>
                         
-                            {
-                              isFound &&  data.slice(start , end).map((item)=>(
+                           {    
+                             data.slice(start , end).map((item)=>(
                                     <>
                                     <tbody key={start}>
                                         <td className="border flex gap-2 items-center sm:px-3 sm:py-3 max-md:flex-col justify-center"><span><img src={item.img} className="w-[130px] rounded-lg h-[60px]" alt="" /></span><span>{item.title}</span></td>
@@ -115,7 +117,7 @@ export default function Batches(){
                                     </tbody>
                                     </>
                                 ))
-                            }
+                           }
                     </table>
                    <div className="flex justify-end w-[62vw] gap-3 py-5 ">
                         <span className="flex   text-[#4B4747] items-center">Rows per Page</span>
@@ -129,6 +131,9 @@ export default function Batches(){
                         <button disabled={start == 0 ? true : false} onClick={handlePrev}>{start == 0 ? <GoChevronLeft size={30} color="grey" />:<GoChevronLeft size={30} />}</button>
                         <button disabled={end == data.length ? true : false} onClick={handleNext}>{end == data.length ? <GoChevronRight size={30} color="grey" />:<GoChevronRight size={30} />}</button>
                    </div>
+                       </>) :
+                       <p>Record not found!, <button onClick={()=>setData(batches)}>Reset State</button></p>
+                   }
                </div>
             </div>
         </div>
