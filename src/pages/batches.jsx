@@ -50,7 +50,7 @@ export default function Batches() {
     setValue((prev) => {
         if (isEnded) {
             // Calculate remaining rows when the end is reached
-            return Math.max(data.length - end, 0);
+            return Math.max((data.length - end )|| 0 , 1);
         }
         return newValue > data.length ? data.length : newValue;
     });
