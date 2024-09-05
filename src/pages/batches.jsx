@@ -28,7 +28,7 @@ export default function Batches(){
             setIsEnded(true);
             setStart(end);
             setEnd(data.length); // Adjust to show all remaining items
-            setValue(end - start); // Adjust the value to show remaining items
+            setValue(prev => end - start); // Adjust the value to show remaining items
         } else {
             setStart(end);
             setEnd(newEnd);
