@@ -28,7 +28,8 @@ export default function Batches(){
             setIsEnded(true);
             setStart(end);
             setEnd(data.length); // Adjust to show all remaining items
-            setValue(prev => end - start); // Adjust the value to show remaining items
+            const valuePerRow = end - start;
+            setValue(valuePerRow); // Adjust the value to show remaining items
         } else {
             setStart(end);
             setEnd(newEnd);
@@ -49,7 +50,12 @@ export default function Batches(){
     };
     const handleValueChange = (e) => {
         const newValue = Math.max(Number(e.target.value) || 0, 1); // Ensure the value is a positive integer
-        setValue(newValue > data.length ? data.length : newValue);
+        setValue((prev)=>{
+            if(isEnded){
+                return end - start;
+            }
+            return newValue > data.length ? data.length : newValue;
+        });
         // Adjust the end index to respect the new number of rows per page
         setEnd((prevEnd) => {
             const newEnd = start + newValue;
@@ -134,7 +140,7 @@ export default function Batches(){
                         <button disabled={end == data.length ? true : false} onClick={handleNext}>{end == data.length ? <GoChevronRight size={30} color="grey" />:<GoChevronRight size={30} />}</button>
                    </div>
                        </>) :
-                       <p>Record not found!, <button onClick={()=>setData(batches)}>Reset State</button></p>
+                       <p>Record not found!, <button onClick={()=>setIsFound(true)}>Reset State</button></p>
                    }
                </div>
             </div>
