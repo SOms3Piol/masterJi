@@ -110,7 +110,7 @@ const OtpForm = () => {
                     }
                 </div>
                 <div className="flex flex-col gap-1">
-                    <button id="verify-button" className={py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColor}}>Verify Account</button>
+                    <button id="verify-button" className={`py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColor}`}>Verify Account</button>
                     <p className="text-slate-400">Didn't receive Code?
                         <span className={text-slate-800 font-semibold}>Resend</span>
                         <Link to={'/course-list'}>course-list</Link>
