@@ -1,33 +1,27 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 const OtpForm = () => {
-    const otpRef = useRef(new Array(4).fill(""));
-    const bgColorRef = useRef('bg-slate-800');
+    const [otp, setOtp] = useState(new Array(4).fill(""));
+    const [bgColor, setBgColor] = useState('bg-slate-800');
     const inputRefs = useRef([]);
 
     useEffect(() => {
         const handleBackgroundColor = () => {
-            const otpValue = otpRef.current.join("");
-            const actualSize = otpRef.current.filter(el => el !== "").length;
+            const otpValue = otp.join("");
+            const actualSize = otp.filter(el => el !== "").length;
 
             if (otpValue === "1234") {
-                bgColorRef.current = 'bg-[#23CF9B]';
+                setBgColor('bg-[#23CF9B]');
             } else if (otpValue !== "1234" && actualSize === 4) {
-                bgColorRef.current = 'bg-[#EB2D5B]';
+                setBgColor('bg-[#EB2D5B]');
             } else {
-                bgColorRef.current = 'bg-slate-800';
-            }
-
-            // Update the button background color
-            const button = document.getElementById("verify-button");
-            if (button) {
-                button.className = `py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColorRef.current}`;
+                setBgColor('bg-slate-800');
             }
         };
 
         handleBackgroundColor();
-    }, [otpRef.current]);
+    }, [otp]);
 
     const handleChange = (index, e) => {
         const value = e.target.value;
@@ -38,17 +32,13 @@ const OtpForm = () => {
             return;
         }
 
-        otpRef.current[index] = value;
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
 
         // Move focus to the next input if the current input is filled
         if (value && index < 3) {
             inputRefs.current[index + 1].focus();
-        }
-
-        // Update the background color
-        const button = document.getElementById("verify-button");
-        if (button) {
-            button.className = `py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColorRef.current}`;
         }
     };
 
@@ -56,36 +46,43 @@ const OtpForm = () => {
         // Handle backspace to focus on the previous input
         if (e.key === "Backspace" && !e.target.value && index > 0) {
             inputRefs.current[index - 1].focus();
+        } else if (e.target.value.length === 1) {
+            // Move focus to the next input if the current input is filled
+            if (index < inputRefs.current.length - 1) {
+                inputRefs.current[index + 1].focus();
+            }
         }
     };
 
-   const handlePaste = (index, e) => {
-    e.preventDefault();
+    const handlePaste = async (index, e) => {
+        e.preventDefault();
 
-    navigator.clipboard.readText().then(pastedData => {
-        const digits = pastedData.replace(/[^0-9]/g, '').split('');
-        let currentIndex = index;
+        try {
+            const clipboardData = await navigator.clipboard.read();
+            const textData = await clipboardData[0].getType('text/plain');
+            const text = await textData.text();
 
-        digits.forEach(digit => {
-            if (inputRefs.current[currentIndex] && otpRef.current[currentIndex] === "") {
-                inputRefs.current[currentIndex].value = digit;
-                otpRef.current[currentIndex] = digit; // Update the ref
-                inputRefs.current[currentIndex].dispatchEvent(new Event('input')); // Trigger input event
-                
-                currentIndex += 1; // Move to the next input
-            }
-        });
+            // Split the pasted text into individual digits
+            const digits = text.split('').filter(char => /^\d$/.test(char)); // Only keep digits
 
-        while (currentIndex < otpRef.current.length && otpRef.current[currentIndex] !== "") {
-            currentIndex++;
+            const newOtp = [...otp];
+
+            // Fill the input boxes with the pasted digits
+            digits.forEach((digit, i) => {
+                if (index + i < inputRefs.current.length) {
+                    newOtp[index + i] = digit; // Update the array with the new digit
+                    inputRefs.current[index + i].value = digit; // Set the value of the input
+                }
+            });
+
+            setOtp(newOtp);
+
+            // Focus on the last input filled
+            inputRefs.current[index + digits.length - 1]?.focus();
+        } catch (error) {
+            console.error('Failed to read clipboard data:', error);
         }
-        if (inputRefs.current[currentIndex]) {
-            inputRefs.current[currentIndex].focus();
-        }
-    }).catch(error => {
-        console.error('Failed to read clipboard data:', error);
-    });
-};
+    };
 
     return (
         <div className="relative bg-sky-800 flex gap-9 flex-col justify-center items-center h-screen w-full">
@@ -97,7 +94,7 @@ const OtpForm = () => {
                 </div>
                 <div className="flex gap-5 items-center">
                     {
-                        otpRef.current.map((_, index) => (
+                        otp.map((_, index) => (
                             <input
                                 key={index}
                                 ref={(input) => inputRefs.current[index] = input}
@@ -112,9 +109,9 @@ const OtpForm = () => {
                     }
                 </div>
                 <div className="flex flex-col gap-1">
-                    <button id="verify-button" className={`py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColorRef.current}`}>Verify Account</button>
+                    <button id="verify-button" className={py-3 w-[417px] max-md:w-[350px] rounded text-white ${bgColor}}>Verify Account</button>
                     <p className="text-slate-400">Didn't receive Code?
-                        <span className={`text-slate-800 font-semibold`}>Resend</span>
+                        <span className={text-slate-800 font-semibold}>Resend</span>
                         <Link to={'/course-list'}>course-list</Link>
                     </p>
                 </div>
