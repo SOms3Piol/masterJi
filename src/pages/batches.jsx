@@ -22,7 +22,7 @@ export default function Batches() {
         setIsEnded(true);
         setStart(end);
         setEnd(data.length); // Adjust to show all remaining items
-        setValue(data.length - start); // Adjust the value to show remaining items
+        setValue(data.length - end); // Adjust the value to show remaining items
     } else {
         setStart(end);
         setEnd(newEnd);
@@ -50,7 +50,7 @@ export default function Batches() {
     setValue((prev) => {
         if (isEnded) {
             // Calculate remaining rows when the end is reached
-            return Math.max(data.length - start, 0);
+            return Math.max(data.length - end, 0);
         }
         return newValue > data.length ? data.length : newValue;
     });
