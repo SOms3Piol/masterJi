@@ -49,20 +49,25 @@ export default function Batches(){
         setIsEnded(false); // Reset ended status
     };
     const handleValueChange = (e) => {
-        const newValue = Math.max(Number(e.target.value) || 0, 1); // Ensure the value is a positive integer
-        setValue((prev)=>{
-            if(isEnded){
-                return end - start;
-            }
-            return newValue > data.length ? data.length : newValue;
-        });
-        // Adjust the end index to respect the new number of rows per page
-        setEnd((prevEnd) => {
-            const newEnd = start + newValue;
-            return newEnd > data.length ? data.length : newEnd;
-        });
-        console.log(end , newValue)
-    };
+    const newValue = Math.max(Number(e.target.value) || 0, 1); // Ensure the value is a positive integer
+
+    setValue((prev) => {
+        if (ended) {
+            // Calculate remaining rows when the end is reached
+            return Math.max(data.length - start, 0);
+        }
+        return newValue > data.length ? data.length : newValue;
+    });
+
+    // Adjust the end index to respect the new number of rows per page
+    setEnd((prevEnd) => {
+        const newEnd = start + newValue;
+        return newEnd > data.length ? data.length : newEnd;
+    });
+
+    console.log(end, newValue);
+};
+
 
    const handleSearch = (e) => {
   // Get the search query from the event
