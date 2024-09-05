@@ -71,7 +71,7 @@ const OtpForm = () => {
             digits.forEach((digit, i) => {
                 if (index + i < inputRefs.current.length) {
                     newOtp[index + i] = digit; // Update the array with the new digit
-                    inputRefs.current[index + i].value = digit; // Set the value of the input
+                    
                 }
             });
 
