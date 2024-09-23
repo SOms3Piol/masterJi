@@ -105,6 +105,14 @@ const OtpForm = () => {
                                 onChange={(e) => handleChange(index, e)}
                                 onPaste={(e) => handlePaste(index, e)}
                                 maxLength={1}
+                                onClick = { () => {
+                                        for(let i = 0; i < otp.length - 1; i++){
+                                            if(inputRefs.current[i].value == ""){
+                                                return inputRefs.current[i].focus();
+                                            }
+                                        }
+                                    }
+                                }
                                 tabIndex={index == 0 ? "" : "-1"}
                             />
                         ))
