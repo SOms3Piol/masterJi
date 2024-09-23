@@ -105,6 +105,7 @@ const OtpForm = () => {
                                 onChange={(e) => handleChange(index, e)}
                                 onPaste={(e) => handlePaste(index, e)}
                                 maxLength={1}
+                                tabIndex="-1"
                             />
                         ))
                     }
